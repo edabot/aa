@@ -20355,67 +20355,76 @@
 	
 	var React = __webpack_require__(1);
 	var Currency = __webpack_require__(169);
+	var RatesStore = __webpack_require__(170);
 	
 	var Widget = React.createClass({
-	  displayName: "Widget",
+	  displayName: 'Widget',
 	
-	  currencies: ["CNY", "GBP", "JPY", "CAD", "EUR", "USD"],
+	  currencies: ["USD", "EUR", "CAD", "JPY", "GBP", "CNY"],
 	
 	  getInitialState: function getInitialState() {
 	    return { baseCurrency: "please select", rates: {} };
 	  },
-	  updateBaseCurrency: function updateBaseCurrency(currency) {
-	    this.setState({ baseCurrency: currency }, this.fetchRates);
+	  componentDidMount: function componentDidMount() {
+	    RatesStore.addListener(this._onChange);
 	  },
-	  fetchRates: function fetchRates() {
-	    $.ajax({
-	      url: "http://api.fixer.io/latest?base=" + this.state.baseCurrency,
-	      type: "GET",
-	      dataType: "JSON",
-	      success: function (resp) {
-	        this.setState({ rates: resp.rates });
-	      }.bind(this)
+	  _onChange: function _onChange() {
+	    this.setState({ rates: RatesStore.all() });
+	  },
+	  setBaseCurrency: function setBaseCurrency(currency) {
+	    var _this = this;
+	
+	    this.setState({ baseCurrency: currency }, function () {
+	      // use arrow function to allow us to call function with arguments
+	      RatesStore.fetchRates(_this.state.baseCurrency);
 	    });
 	  },
 	  render: function render() {
-	    var _this = this;
+	    var _this2 = this;
 	
 	    var currencyOptions = this.currencies.map(function (currency) {
 	      return React.createElement(
-	        "div",
-	        { key: currency,
-	          onClick: _this.updateBaseCurrency.bind(_this, currency),
-	          className: "currency-single" },
+	        'div',
+	        { onClick: _this2.setBaseCurrency.bind(_this2, currency),
+	          key: currency,
+	          className: 'currency-option' },
 	        currency
 	      );
 	    });
 	
-	    var currencyNames = Object.keys(this.state.rates);
-	    var currencyComps = currencyNames.map(function (name) {
-	      return React.createElement(Currency, { name: name, rate: _this.state.rates[name], key: name });
+	    var rates = this.state.rates || {};
+	    var currencyNames = Object.keys(rates);
+	    var currencyRates = currencyNames.map(function (currency) {
+	      return React.createElement(Currency, { name: currency,
+	        rate: _this2.state.rates[currency],
+	        key: currency });
 	    });
 	
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
 	      React.createElement(
-	        "h1",
+	        'h1',
 	        null,
-	        "Currency Exchange Rates"
+	        'Currency Exchange Rates'
 	      ),
 	      React.createElement(
-	        "h3",
+	        'h3',
 	        null,
-	        "Base Currency: ",
+	        'Base Currency: ',
 	        this.state.baseCurrency
 	      ),
 	      React.createElement(
-	        "div",
-	        { className: "currency-options" },
-	        "Get Rates: ",
+	        'div',
+	        { className: 'currency-selector' },
+	        'Get Rates:',
 	        currencyOptions
 	      ),
-	      currencyComps
+	      React.createElement(
+	        'div',
+	        { className: 'rates-list' },
+	        currencyRates
+	      )
 	    );
 	  }
 	});
@@ -20449,6 +20458,42 @@
 	});
 	
 	module.exports = Currency;
+
+/***/ },
+/* 170 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var _callbacks = [];
+	var _rates = {};
+	
+	var RatesStore = {
+	  addListener: function addListener(callback) {
+	    _callbacks.push(callback);
+	  },
+	  executeListeners: function executeListeners() {
+	    for (var i = 0; i < _callbacks.length; i++) {
+	      _callbacks[i]();
+	    }
+	  },
+	  all: function all() {
+	    return Object.assign({}, _rates);
+	  },
+	  fetchRates: function fetchRates(currency) {
+	    $.ajax({
+	      url: "http://api.fixer.io/latest?base=" + currency,
+	      type: "GET",
+	      dataType: "JSON",
+	      success: function (resp) {
+	        _rates = resp.rates;
+	        this.executeListeners();
+	      }.bind(this)
+	    });
+	  }
+	};
+	// window.RatesStore = RatesStore;
+	module.exports = RatesStore;
 
 /***/ }
 /******/ ]);
