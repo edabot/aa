@@ -2,6 +2,7 @@
 
 const React = require("react");
 const ClickStore = require("../stores/click_store.js");
+const ClickActions = require('../actions/click_actions');
 
 const ClickCounter = React.createClass({
   getInitialState(){
@@ -11,11 +12,11 @@ const ClickCounter = React.createClass({
     this.setState({count: ClickStore.count()});
   },
   componentDidMount() {
-    ClickStore.addChangeHandler(this._countChanged);
+    ClickStore.addListener(this._countChanged);
   },
   click(e){
     e.preventDefault();
-    ClickStore.increment();
+    ClickActions.increment();
   },
   render(){
     return (
