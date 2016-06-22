@@ -1,0 +1,27 @@
+/* AutoComplete */
+
+ .auto-enter {
+   opacity: 0.01;
+   transform: skewX(90deg);
+ }
+
+ .auto-enter.auto-enter-active {
+   opacity: 1;
+   transform: skewX(0deg);
+   transition: opacity 200ms, transform 200ms;
+ }
+
+ .auto-leave {
+   opacity: 1;
+   transform: translateY(0);
+ }
+
+ .auto-leave.auto-leave-active {
+   opacity: 0.01;
+   transform: skewX(60deg);
+   transition: opacity 200ms, transform 200ms;
+ }
+
+ li {
+   list-style: none;
+ }
