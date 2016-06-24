@@ -3,8 +3,8 @@ const Dispatcher = require('../dispatcher/dispatcher');
 const BenchConstants = require('../constants/bench_constants');
 
 const BenchActions = {
-  fetchAllBenches(){
-    BenchApiUtil.fetchAllBenches(this.receiveAllBenches);
+  fetchAllBenches(bounds){
+    BenchApiUtil.fetchAllBenches(bounds, this.receiveAllBenches);
   },
   receiveAllBenches(benches){
     Dispatcher.dispatch({

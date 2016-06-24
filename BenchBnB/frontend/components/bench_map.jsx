@@ -35,13 +35,14 @@ const BenchMap = React.createClass({
   },
   listenForMove() {
     google.maps.event.addListener(this.map, 'idle', () => {
-      const bounds = this.map.getBounds();
-      console.log('center');
-      console.log(bounds.getCenter().lat(), bounds.getCenter().lng());
-      console.log("north east");
-      console.log(bounds.getNorthEast().lat(), bounds.getNorthEast().lng());
-      console.log("south west");
-      console.log(bounds.getSouthWest().lat(), bounds.getSouthWest().lng());
+      const mapBounds = this.map.getBounds();
+      let bounds = { "northEast": {}, "southWest": {} };
+      bounds.northEast = {"lat": mapBounds.getNorthEast().lat(),
+                          "lng": mapBounds.getNorthEast().lng()};
+      bounds.southWest = {"lat": mapBounds.getSouthWest().lat(),
+                          "lng": mapBounds.getSouthWest().lng()};
+
+      console.log(bounds);
       BenchActions.fetchAllBenches();
     });
   },

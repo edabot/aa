@@ -32729,10 +32729,11 @@
 	'use strict';
 	
 	var BenchApiUtil = {
-	  fetchAllBenches: function fetchAllBenches(callback) {
+	  fetchAllBenches: function fetchAllBenches(bounds, callback) {
 	    $.ajax({
 	      url: '/api/benches',
 	      dataType: 'json',
+	      data: bounds,
 	      success: function success(resp) {
 	        callback(resp);
 	      }
@@ -32765,8 +32766,8 @@
 	var BenchConstants = __webpack_require__(253);
 	
 	var BenchActions = {
-	  fetchAllBenches: function fetchAllBenches() {
-	    BenchApiUtil.fetchAllBenches(this.receiveAllBenches);
+	  fetchAllBenches: function fetchAllBenches(bounds) {
+	    BenchApiUtil.fetchAllBenches(bounds, this.receiveAllBenches);
 	  },
 	  receiveAllBenches: function receiveAllBenches(benches) {
 	    Dispatcher.dispatch({
@@ -32909,13 +32910,14 @@
 	    var _this2 = this;
 	
 	    google.maps.event.addListener(this.map, 'idle', function () {
-	      var bounds = _this2.map.getBounds();
-	      console.log('center');
-	      console.log(bounds.getCenter().lat(), bounds.getCenter().lng());
-	      console.log("north east");
-	      console.log(bounds.getNorthEast().lat(), bounds.getNorthEast().lng());
-	      console.log("south west");
-	      console.log(bounds.getSouthWest().lat(), bounds.getSouthWest().lng());
+	      var mapBounds = _this2.map.getBounds();
+	      var bounds = { "northEast": {}, "southWest": {} };
+	      bounds.northEast = { "lat": mapBounds.getNorthEast().lat(),
+	        "lng": mapBounds.getNorthEast().lng() };
+	      bounds.southWest = { "lat": mapBounds.getSouthWest().lat(),
+	        "lng": mapBounds.getSouthWest().lng() };
+	
+	      console.log(bounds);
 	      BenchActions.fetchAllBenches();
 	    });
 	  },
