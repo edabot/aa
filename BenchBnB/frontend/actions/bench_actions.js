@@ -4,7 +4,7 @@ const BenchConstants = require('../constants/bench_constants');
 
 const BenchActions = {
   fetchAllBenches(bounds){
-    BenchApiUtil.fetchAllBenches(bounds, this.receiveAllBenches);
+    BenchApiUtil.fetchAllBenches(bounds, BenchActions.receiveAllBenches);
   },
   receiveAllBenches(benches){
     Dispatcher.dispatch({

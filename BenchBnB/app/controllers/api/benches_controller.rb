@@ -1,3 +1,4 @@
+
 class Api::BenchesController < ApplicationController
 
   def index

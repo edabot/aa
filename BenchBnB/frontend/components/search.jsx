@@ -6,8 +6,8 @@ const Search = React.createClass({
   render(){
     return(
       <div>
-        <BenchIndex />
         <BenchMap />
+        <BenchIndex />
       </div>
     );
   }

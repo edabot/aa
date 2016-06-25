@@ -32767,7 +32767,7 @@
 	
 	var BenchActions = {
 	  fetchAllBenches: function fetchAllBenches(bounds) {
-	    BenchApiUtil.fetchAllBenches(bounds, this.receiveAllBenches);
+	    BenchApiUtil.fetchAllBenches(bounds, BenchActions.receiveAllBenches);
 	  },
 	  receiveAllBenches: function receiveAllBenches(benches) {
 	    Dispatcher.dispatch({
@@ -32854,8 +32854,8 @@
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(BenchIndex, null),
-	      React.createElement(BenchMap, null)
+	      React.createElement(BenchMap, null),
+	      React.createElement(BenchIndex, null)
 	    );
 	  }
 	});
@@ -32872,6 +32872,13 @@
 	var ReactDOM = __webpack_require__(38);
 	var BenchStore = __webpack_require__(230);
 	var BenchActions = __webpack_require__(254);
+	
+	var _getCoordsObj = function _getCoordsObj(latLng) {
+	  return {
+	    lat: latLng.lat(),
+	    lng: latLng.lng()
+	  };
+	};
 	
 	var BenchMap = React.createClass({
 	  displayName: 'BenchMap',
@@ -32911,14 +32918,11 @@
 	
 	    google.maps.event.addListener(this.map, 'idle', function () {
 	      var mapBounds = _this2.map.getBounds();
-	      var bounds = { "northEast": {}, "southWest": {} };
-	      bounds.northEast = { "lat": mapBounds.getNorthEast().lat(),
-	        "lng": mapBounds.getNorthEast().lng() };
-	      bounds.southWest = { "lat": mapBounds.getSouthWest().lat(),
-	        "lng": mapBounds.getSouthWest().lng() };
+	      var northEast = _getCoordsObj(mapBounds.getNorthEast());
+	      var southWest = _getCoordsObj(mapBounds.getSouthWest());
 	
-	      console.log(bounds);
-	      BenchActions.fetchAllBenches();
+	      var bounds = { bounds: { northEast: northEast, southWest: southWest } };
+	      BenchActions.fetchAllBenches(bounds);
 	    });
 	  },
 	  render: function render() {
