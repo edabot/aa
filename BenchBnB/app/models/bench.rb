@@ -1,5 +1,5 @@
 class Bench < ActiveRecord::Base
-  validates :description, :lat, :lng, presence: true
+  validates :description, :lat, :lng, :seats, presence: true
 
   def self.in_bounds(bounds)
 

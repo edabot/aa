@@ -20,19 +20,19 @@
     "flux": "^2.1.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-router": "^2.5.1",
+    "react-router": "2.0.1",
     "webpack": "^1.13.1"
   },
   "eslintConfig": {
     "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true
-        }
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
     },
     "rules": {
-        "semi": 2
+      "semi": 2
     }
   }
 }

@@ -10,4 +10,18 @@ class Api::BenchesController < ApplicationController
     @bench = Bench.find(params[:id])
     render :show
   end
+
+  def create
+    @bench = Bench.create!(bench_params)
+
+    render :show
+    
+  end
+
+  private
+
+  def bench_params
+    params.require(:bench).permit(:description, :lat, :lng, :seats)
+  end
+
 end

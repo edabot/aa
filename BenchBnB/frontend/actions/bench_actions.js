@@ -11,6 +11,12 @@ const BenchActions = {
       actionType: BenchConstants.BENCHES_RECEIVED,
       benches: benches
     });
+  },
+  createBench(bench){
+    BenchApiUtil.createBench(bench, this.receiveBench);
+  },
+  receiveBench(bench){
+    console.log(bench);
   }
 };
 
