@@ -25941,13 +25941,28 @@
 	
 	var BenchStore = new Store(Dispatcher);
 	
-	var _benches = {};
+	var _benches = {},
+	    _oldBenches = {},
+	    _newBenches = {};
+	
+	Benchstore.uniqueBenches = function (groupA, groupB) {
+	  result = Object.keys(groupA).map(function (key) {
+	    if (!Object.keys(groupB).includes(key)) {
+	      return groupA[key];
+	    }
+	  });
+	  return result.filter(function (obj) {
+	    return obj !== undefined;
+	  });
+	};
 	
 	BenchStore.all = function () {
 	  return Object.assign({}, _benches);
 	};
 	
 	BenchStore.resetAllBenches = function (benches) {
+	  _oldBenches = BenchStore.uniqueBenches(_benches, benches);
+	  _newBenches = BenchStore.uniqueBenches(benches, _benches);
 	  _benches = benches;
 	  BenchStore.__emitChange();
 	};
@@ -32883,7 +32898,7 @@
 	var BenchMap = React.createClass({
 	  displayName: 'BenchMap',
 	  getInitialState: function getInitialState() {
-	    return { benches: BenchStore.all() };
+	    return { newBenches: BenchStore.all(), oldBenches: [] };
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var mapDOMNode = ReactDOM.findDOMNode(this.refs.map);
@@ -32898,9 +32913,9 @@
 	  getStateFromStore: function getStateFromStore() {
 	    var _this = this;
 	
-	    this.setState({ benches: BenchStore.all() });
-	    Object.keys(this.state.benches).forEach(function (key) {
-	      _this.addBench(_this.state.benches[key]);
+	    this.setState({ newBenches: BenchStore.all() });
+	    Object.keys(this.state.newBenches).forEach(function (key, i) {
+	      _this.addBench(_this.state.newBenches[key]);
 	    });
 	  },
 	  addBench: function addBench(bench) {

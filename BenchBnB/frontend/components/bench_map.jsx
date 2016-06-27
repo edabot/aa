@@ -12,7 +12,7 @@ const _getCoordsObj = function(latLng) {
 
 const BenchMap = React.createClass({
   getInitialState(){
-    return { benches: BenchStore.all() };
+    return { newBenches: BenchStore.all(), oldBenches: [] };
   },
   componentDidMount(){
     const mapDOMNode = ReactDOM.findDOMNode(this.refs.map);
@@ -25,16 +25,16 @@ const BenchMap = React.createClass({
     this.listenForMove();
   },
   getStateFromStore(){
-    this.setState({ benches: BenchStore.all() });
-    Object.keys(this.state.benches).forEach(key => {
-      this.addBench(this.state.benches[key]);
+    this.setState({ newBenches: BenchStore.all() });
+    Object.keys(this.state.newBenches).forEach((key, i) => {
+      this.addBench(this.state.newBenches[key]);
     });
   },
   addBench(bench){
     const pos = new google.maps.LatLng(bench.lat, bench.lng),
                 marker = new google.maps.Marker({
                   position: pos,
-                  map: this.map
+                  map: this.map,
                 });
     marker.addListener('click', () => {
       alert(`clicked on: ${bench.description}`);
