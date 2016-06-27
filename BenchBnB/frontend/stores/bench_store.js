@@ -8,8 +8,8 @@ let _benches = {},
     _oldBenches = {},
     _newBenches = {};
 
-Benchstore.uniqueBenches = function(groupA, groupB) {
-  result =  Object.keys(groupA).map(key => {
+BenchStore.uniqueBenches = function(groupA, groupB) {
+  let result =  Object.keys(groupA).map(key => {
     if (!Object.keys(groupB).includes(key)) { return groupA[key]; }
   });
   return result.filter(obj => obj !== undefined);
@@ -17,6 +17,14 @@ Benchstore.uniqueBenches = function(groupA, groupB) {
 
 BenchStore.all = function() {
   return Object.assign({}, _benches);
+};
+
+BenchStore.newBenches = function(){
+  return Object.assign({}, _newBenches);
+};
+
+BenchStore.oldBenches = function(){
+  return Object.assign({}, _oldBenches);
 };
 
 BenchStore.resetAllBenches = function(benches) {

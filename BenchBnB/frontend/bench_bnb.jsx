@@ -6,8 +6,6 @@ const Router = ReactRouter.Router;
 
 const Search = require('./components/search');
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
   ReactDOM.render(<div><Search /></div>,
   document.getElementById("content"));
