@@ -1,4 +1,3 @@
-
 class Api::BenchesController < ApplicationController
 
   def index
@@ -15,7 +14,7 @@ class Api::BenchesController < ApplicationController
     @bench = Bench.create!(bench_params)
 
     render :show
-    
+
   end
 
   private

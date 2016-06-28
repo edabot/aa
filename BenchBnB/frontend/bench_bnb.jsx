@@ -8,7 +8,8 @@ const hashHistory = ReactRouter.hashHistory;
 
 const Search = require('./components/search');
 const BenchForm = require('./components/bench_form');
-const BenchApiUtil = require('./util/bench_api_util');
+const SessionActions = require('./actions/session_actions');
+const SessionStore = require('./stores/session_store');
 
 const App = React.createClass({
   render() {
@@ -28,7 +29,7 @@ const routes=(
   </Route>
 );
 
-window.BenchApiUtil= BenchApiUtil;
+window.SessionActions= SessionActions;
 
 document.addEventListener("DOMContentLoaded", () => {
   ReactDOM.render(

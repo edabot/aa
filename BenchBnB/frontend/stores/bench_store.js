@@ -27,6 +27,10 @@ BenchStore.oldBenches = function(){
   return Object.assign({}, _oldBenches);
 };
 
+BenchStore.addBench = function(bench){
+  _benches[bench.id] = bench;
+};
+
 BenchStore.resetAllBenches = function(benches) {
   _oldBenches = BenchStore.uniqueBenches(_benches, benches);
   _newBenches = BenchStore.uniqueBenches(benches, _benches);
@@ -38,6 +42,11 @@ BenchStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
   case BenchConstants.BENCHES_RECEIVED:
     BenchStore.resetAllBenches(payload.benches);
+    BenchStore.__emitChange();
+    break;
+  case BenchConstants.BENCH_RECEIVED:
+    BenchStore.addBench(payload.bench);
+    BenchStore.__emitChange();
     break;
   }
 };

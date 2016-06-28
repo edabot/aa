@@ -56,7 +56,8 @@
 	
 	var Search = __webpack_require__(230);
 	var BenchForm = __webpack_require__(259);
-	var BenchApiUtil = __webpack_require__(256);
+	var SessionActions = __webpack_require__(261);
+	var SessionStore = __webpack_require__(263);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -94,7 +95,7 @@
 	  })
 	);
 	
-	window.BenchApiUtil = BenchApiUtil;
+	window.SessionActions = SessionActions;
 	
 	document.addEventListener("DOMContentLoaded", function () {
 	  ReactDOM.render(React.createElement(
@@ -25654,6 +25655,10 @@
 	  return Object.assign({}, _oldBenches);
 	};
 	
+	BenchStore.addBench = function (bench) {
+	  _benches[bench.id] = bench;
+	};
+	
 	BenchStore.resetAllBenches = function (benches) {
 	  _oldBenches = BenchStore.uniqueBenches(_benches, benches);
 	  _newBenches = BenchStore.uniqueBenches(benches, _benches);
@@ -25665,6 +25670,11 @@
 	  switch (payload.actionType) {
 	    case BenchConstants.BENCHES_RECEIVED:
 	      BenchStore.resetAllBenches(payload.benches);
+	      BenchStore.__emitChange();
+	      break;
+	    case BenchConstants.BENCH_RECEIVED:
+	      BenchStore.addBench(payload.bench);
+	      BenchStore.__emitChange();
 	      break;
 	  }
 	};
@@ -32468,7 +32478,10 @@
 	    BenchApiUtil.createBench(bench, this.receiveBench);
 	  },
 	  receiveBench: function receiveBench(bench) {
-	    console.log(bench);
+	    Dispatcher.dispatch({
+	      actionType: BenchConstants.BENCH_RECEIVED,
+	      bench: bench
+	    });
 	  }
 	};
 	
@@ -32688,6 +32701,142 @@
 	});
 	
 	module.exports = BenchForm;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var SessionApiUtil = {
+	  signup: function signup(user, callback) {
+	    $.ajax({
+	      url: '/api/session',
+	      type: "POST",
+	      dataType: 'json',
+	      data: { user: user },
+	      success: function success(resp) {
+	        callback(resp);
+	      }
+	    });
+	  },
+	  login: function login(user, callback) {
+	    $.ajax({
+	      url: '/api/session',
+	      type: "POST",
+	      dataType: 'json',
+	      data: { user: user },
+	      success: function success(resp) {
+	        callback(resp);
+	      }
+	    });
+	  },
+	  delete: function _delete(callback) {
+	    $.ajax({
+	      url: '/api/session',
+	      type: 'DELETE',
+	      success: function success(resp) {
+	        callback(resp);
+	      }
+	    });
+	  }
+	};
+	
+	module.exports = SessionApiUtil;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var SessionApiUtil = __webpack_require__(260);
+	var Dispatcher = __webpack_require__(251);
+	var SessionConstants = __webpack_require__(262);
+	
+	var SessionActions = {
+	  signup: function signup(user) {
+	    SessionApiUtil.signup(user, SessionActions.receiveCurrentUser);
+	  },
+	  login: function login(user) {
+	    SessionApiUtil.login(user, SessionActions.receiveCurrentUser);
+	  },
+	  logout: function logout() {
+	    SessionApiUtil.delete(SessionActions.removeCurrentUser);
+	  },
+	  receiveCurrentUser: function receiveCurrentUser(currentUser) {
+	    Dispatcher.dispatch({
+	      actionType: SessionConstants.LOGIN,
+	      currentUser: currentUser
+	    });
+	  },
+	  removeCurrentUser: function removeCurrentUser() {
+	    Dispatcher.dispatch({
+	      actionType: SessionConstants.LOGOUT
+	    });
+	  }
+	};
+	
+	module.exports = SessionActions;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var SessionConstants = {
+	  LOGIN: "LOGIN",
+	  LOGOUT: "LOGOUT"
+	};
+	
+	module.exports = SessionConstants;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Store = __webpack_require__(233).Store;
+	var Dispatcher = __webpack_require__(251);
+	var SessionConstants = __webpack_require__(262);
+	
+	var SessionStore = new Store(Dispatcher);
+	
+	var _currentUser = {};
+	
+	var _login = function _login(currentUser) {
+	  _currentUser = currentUser;
+	};
+	
+	var _logout = function _logout() {
+	  _currentUser = {};
+	};
+	
+	SessionStore.currentUser = function () {
+	  return Object.assign({}, _currentUser);
+	};
+	
+	SessionStore.isUserLoggedIn = function () {
+	  return _currentUser !== {};
+	};
+	
+	SessionStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case SessionConstants.LOGIN:
+	
+	      _login(payload.currentUser);
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.LOGOUT:
+	      _logout();
+	      SessionStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = SessionStore;
 
 /***/ }
 /******/ ]);

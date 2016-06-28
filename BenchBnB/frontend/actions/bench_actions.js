@@ -16,7 +16,10 @@ const BenchActions = {
     BenchApiUtil.createBench(bench, this.receiveBench);
   },
   receiveBench(bench){
-    console.log(bench);
+    Dispatcher.dispatch({
+      actionType: BenchConstants.BENCH_RECEIVED,
+      bench: bench
+    });
   }
 };
 
