@@ -10,8 +10,13 @@ const Search = require('./components/search');
 const BenchForm = require('./components/bench_form');
 const SessionActions = require('./actions/session_actions');
 const SessionStore = require('./stores/session_store');
+const LoginForm = require('./components/login_form');
 
 const App = React.createClass({
+  getChildContext() {
+    return {router: hashHistory};
+  },
+
   render() {
     return(
       <div>
@@ -22,10 +27,15 @@ const App = React.createClass({
   }
 });
 
+App.childContextTypes = {
+  router: React.PropTypes.object
+};
+
 const routes=(
   <Route path='/' component={App}>
     <IndexRoute component={Search} />
     <Route path='benches/new' component={BenchForm} />
+    <Route path='login' component={LoginForm} />
   </Route>
 );
 

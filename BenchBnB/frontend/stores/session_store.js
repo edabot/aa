@@ -7,6 +7,7 @@ const SessionStore = new Store(Dispatcher);
 let _currentUser = {};
 
 const _login = function(currentUser){
+  console.log("logged in!");
   _currentUser = currentUser;
 };
 

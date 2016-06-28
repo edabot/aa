@@ -58,9 +58,13 @@
 	var BenchForm = __webpack_require__(259);
 	var SessionActions = __webpack_require__(261);
 	var SessionStore = __webpack_require__(263);
+	var LoginForm = __webpack_require__(264);
 	
 	var App = React.createClass({
 	  displayName: 'App',
+	  getChildContext: function getChildContext() {
+	    return { router: hashHistory };
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -85,6 +89,10 @@
 	  }
 	});
 	
+	App.childContextTypes = {
+	  router: React.PropTypes.object
+	};
+	
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App, __self: undefined
@@ -92,6 +100,8 @@
 	  React.createElement(IndexRoute, { component: Search, __self: undefined
 	  }),
 	  React.createElement(Route, { path: 'benches/new', component: BenchForm, __self: undefined
+	  }),
+	  React.createElement(Route, { path: 'login', component: LoginForm, __self: undefined
 	  })
 	);
 	
@@ -32807,6 +32817,7 @@
 	var _currentUser = {};
 	
 	var _login = function _login(currentUser) {
+	  console.log("logged in!");
 	  _currentUser = currentUser;
 	};
 	
@@ -32837,6 +32848,98 @@
 	};
 	
 	module.exports = SessionStore;
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var SessionActions = __webpack_require__(261);
+	var SessionStore = __webpack_require__(263);
+	
+	var LoginStore = React.createClass({
+	  displayName: 'LoginStore',
+	  getInitialState: function getInitialState() {
+	    return {
+	      username: "",
+	      password: ""
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    SessionStore.addListener(this.checkIfLoggedIn);
+	  },
+	  checkIfLoggedIn: function checkIfLoggedIn() {
+	    debugger;
+	    if (SessionStore.isUserLoggedIn()) {
+	      debugger;
+	      this.context.router.push("/");
+	    }
+	  },
+	  _handleSubmit: function _handleSubmit() {
+	    SessionActions.login({
+	      username: this.state.username,
+	      password: this.state.password
+	    });
+	  },
+	  _handleUsernameChange: function _handleUsernameChange(e) {
+	    this.setState({ username: e.target.value });
+	  },
+	  _handlePasswordChange: function _handlePasswordChange(e) {
+	    this.setState({ password: e.target.value });
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      {
+	        __self: this
+	      },
+	      React.createElement(
+	        'form',
+	        {
+	          __self: this
+	        },
+	        React.createElement(
+	          'label',
+	          {
+	            __self: this
+	          },
+	          'Username:',
+	          React.createElement('input', { id: 'user[username]',
+	            onChange: this._handleUsernameChange,
+	            value: this.state.username, __self: this
+	          })
+	        ),
+	        React.createElement('br', {
+	          __self: this
+	        }),
+	        React.createElement(
+	          'label',
+	          {
+	            __self: this
+	          },
+	          'Password:',
+	          React.createElement('input', { id: 'user[password]',
+	            onChange: this._handlePasswordChange,
+	            value: this.state.password, type: 'password', __self: this
+	          })
+	        ),
+	        React.createElement('br', {
+	          __self: this
+	        }),
+	        React.createElement(
+	          'button',
+	          { onClick: this._handleSubmit, __self: this
+	          },
+	          'login'
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = LoginStore;
 
 /***/ }
 /******/ ]);
